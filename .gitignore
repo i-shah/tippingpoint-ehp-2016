@@ -1,0 +1,19 @@
+# Python
+*.pyc
+*~
+*#
+.#*
+core
+*.com
+*.dll
+*.exe
+*.o
+*.so
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
