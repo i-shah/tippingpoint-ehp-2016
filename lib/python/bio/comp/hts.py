@@ -32,6 +32,8 @@ from util.misc import *
 from bio.data.htsdb import *
 
 
+FT=['p53Act','StressKinase','OxidativeStress','MicrotubuleCSK','MitoMass','MitoMembPot',
+    'MitoticArrest','CellCycleArrest','NuclearSize','CellLoss']
 
 FT1=['p53Act','StressKinase','OxidativeStress','MicrotubuleCSK','MitoMass','MitoMembPot',
     'MitoticArrest','CellCycleArrest','NuclearSize','CellLoss']
@@ -520,3 +522,22 @@ def plotHtsTrajHM(hchem_id,exp_id,add_t0=False,use_resp='fc',
                                                         chem.lower().replace(' ','-'),suffix))
         fig.savefig(loc+"traj-hm-%s-%s-%s-%s-%d.png" % (resp_col,exp_id.lower(),hchem_id.lower(),
                                                         chem.lower().replace(' ','-'),suffix))
+
+def calcLECConc(X,Y,dbg=False,R_crit=-1):
+    if not any([abs(i)>abs(R_crit) for i in Y]):
+        return None
+    lec = None
+    Lec = None
+    lc_min=np.min(X)
+    lc_max=np.max(X)
+    Y_spl= interp.splrep(X,Y,s=1)
+    FY0 = lambda x: interp.splev(x,Y_spl,der=0)
+    FY1 = lambda x: np.abs(FY0(x))-R_crit
+    
+    try:
+        Lec = optz.fsolve(FY1,[lc_min,lc_max])
+        lec = np.min(Lec[Lec>lc_min])
+    except:
+        pass
+
+    return lec
